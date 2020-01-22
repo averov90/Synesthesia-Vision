@@ -61,93 +61,57 @@ namespace WavUtils {
 
 	struct WAV_HEADER
 	{
-		//Содержит символы "RIFF" в ASCII кодировке
-		//(0x52494646 в big-endian представлении)
+		//Contains the characters "RIFF" in ASCII
 		char chunkId[4];
 
-		// 36 + subchunk2Size, или более точно:
+		// 36 + subchunk2Size, or more precisely:
 		// 4 + (8 + subchunk1Size) + (8 + subchunk2Size)
-		// Это оставшийся размер цепочки, начиная с этой позиции.
-		// Иначе говоря, это размер файла - 8, то есть,
-		// исключены поля chunkId и chunkSize.
+		// This is the remaining size of the chain starting from this position.
+		// In other words, this is the file size-8, that is, the chunkId and chunkSize fields are excluded.
 		unsigned __int32 chunkSize;
 
-		// Содержит символы "WAVE"
-		// (0x57415645 в big-endian представлении)
+		// Contains characters
 		char format[4];
 
-		// Формат "WAVE" состоит из двух подцепочек: "fmt " и "data":
-		// Подцепочка "fmt " описывает формат звуковых данных:
+		// The "WAVE" format consists of two subheadings: "fmt" and " data":
+		// The "fmt" tag describes the audio data format:
 
-		// Содержит символы "fmt "
-		// (0x666d7420 в big-endian представлении)
+		// Contains the characters "fmt "
 		char subchunk1Id[4];
 
-		// 16 для формата PCM.
-		// Это оставшийся размер подцепочки, начиная с этой позиции.
+		// 16 for the PCM format.
+		// This is the remaining size under the chain starting from this position.
 		unsigned __int32 subchunk1Size;
 
-		// Для PCM = 1 (то есть, Линейное квантование).
-		// Значения, отличающиеся от 1, обозначают некоторый формат сжатия.
+		// For PCM = 1 (that is, Linear quantization).
+		// Values other than 1 indicate some compression format.
 		unsigned __int16 audioFormat;
 
-		// Количество каналов. Моно = 1, Стерео = 2 и т.д.
+		// Number of channels. Mono = 1, Stereo = 2, etc.
 		unsigned __int16 numChannels;
 
-		// Частота дискретизации. 8000 Гц, 44100 Гц и т.д.
+		// Sampling frequency. 8000 Hz, 44100 Hz, etc.
 		unsigned __int32 sampleRate;
 
 		// sampleRate * numChannels * bitsPerSample/8
 		unsigned __int32 byteRate;
 
 		// numChannels * bitsPerSample/8
-		// Количество байт для одного сэмпла, включая все каналы.
+		// The number of bytes for a single sample, including all channels.
 		unsigned __int16 blockAlign;
 
-		// Так называемая "глубиная" или точность звучания. 8 бит, 16 бит и т.д.
+		// So-called "depth" or accuracy of sound. 8 bit, 16 bit, etc.
 		unsigned __int16 bitsPerSample;
 
-		// Подцепочка "data" содержит аудио-данные и их размер.
+		// The "data" tag contains audio data and its size.
 
-		// Содержит символы "data"
-		// (0x64617461 в big-endian представлении)
+		// Contains the characters "data"
 		char subchunk2Id[4];
 
 		// numSamples * numChannels * bitsPerSample/8
-		// Количество байт в области данных.
+		// The number of bytes in the data area.
 		unsigned __int32 subchunk2Size;
 
-		// Далее следуют непосредственно Wav данные.
+		// This is followed directly by Wav data.
 	};
-	/*
-	ofstream str;
-	str.open("test.wav", ofstream::out | fstream::binary);
-	WavUtils::WAV_HEADER wh;
-
-	memcpy(wh.chunkId, "RIFF", 4);
-	wh.chunkSize=12036;
-	memcpy(wh.format, "WAVE", 4);
-	memcpy(wh.subchunk1Id, "fmt ", 4);
-	wh.subchunk1Size=16;
-	wh.audioFormat=1;
-	wh.numChannels=1;
-	wh.sampleRate= WavUtils::SAMPLE_RATE;
-	wh.byteRate= WavUtils::SAMPLE_RATE*2;
-	wh.blockAlign=2;
-	wh.bitsPerSample=16;
-	memcpy(wh.subchunk2Id, "data", 4);
-	wh.subchunk2Size=24000;
-	str.write((char*)&wh, sizeof(WavUtils::WAV_HEADER));
-
-	//float *af = a, *bf = b, *ae = a+50, *be=b+19;
-	for (unsigned int i1 = 0; i1 != 1000; ++i1)
-
-		for (unsigned int i = 0; i != 12; ++i)
-		{
-			str.write((char*)(a+i), 2);
-			//cout << a[i] << endl;
-		}
-	str.close();
-	cout << "end!" << endl;
-	*/
 }
