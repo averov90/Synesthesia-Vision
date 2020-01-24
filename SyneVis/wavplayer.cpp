@@ -89,3 +89,48 @@ bool WavePlayWaitD(const char *WAV_file) {
 	delete[] buffer;
 	return true;
 };
+
+bool SNDPlayNowaitD(const short *SND_file, unsigned int len) {
+	WaveFileNoW *wavinfo = new WaveFileNoW;
+	wavinfo->currpos = wavinfo->buffer = new short[len];
+	memcpy(wavinfo->buffer, SND_file, len << 1);
+	wavinfo->endpos = wavinfo->buffer + len;
+	wavinfo->stream = new PaStream*;
+	if (Pa_OpenDefaultStream(wavinfo->stream, 0, 1, paInt16, SAMPLE_RATE, paFramesPerBufferUnspecified, PlayCallback, wavinfo)) {
+		delete[] wavinfo->buffer;
+		delete wavinfo->stream;
+		delete wavinfo;
+		return false;
+	}
+	Pa_SetStreamFinishedCallback(*wavinfo->stream, PlayFinishedCallbackNoW);
+	if (Pa_StartStream(*wavinfo->stream)) {
+		delete[] wavinfo->buffer;
+		delete wavinfo->stream;
+		delete wavinfo;
+		return false;
+	}
+	return true;
+};
+
+bool SNDPlayWaitD(const short *SND_file, unsigned int len) {
+	WaveFileW wavinfo;
+	short *buffer = new short[len];
+	memcpy(buffer, SND_file, len << 1);
+	wavinfo.currpos = buffer;
+	wavinfo.endpos = buffer + len;
+	PaStream *stream;
+	if (Pa_OpenDefaultStream(&stream, 0, 1, paInt16, SAMPLE_RATE, paFramesPerBufferUnspecified, PlayCallback, &wavinfo)) {
+		delete[] buffer;
+		return false;
+	}
+	Pa_SetStreamFinishedCallback(stream, PlayFinishedCallbackW);
+	if (Pa_StartStream(stream)) {
+		delete[] buffer;
+		return false;
+	}
+	std::unique_lock<std::mutex> locker(wavinfo.lock);
+	while (wavinfo.needtosleep) wavinfo.wait_lk.wait(locker);
+	Pa_CloseStream(stream);
+	delete[] buffer;
+	return true;
+};
