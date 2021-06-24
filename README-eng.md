@@ -1,5 +1,5 @@
 # Synesthesia Vision
-[![License](https://img.shields.io/badge/LICENSE-The%20Unlicense-green?style=flat-square)](/LICENSE)  [![Version](https://img.shields.io/badge/VERSION-DEBUG%20--%20demonstrable-yellow?style=flat-square)](https://github.com/averov90/Synesthesia-Vision/releases)
+[![License](https://img.shields.io/badge/LICENSE-MIT-green?style=flat-square)](/LICENSE)  [![Version](https://img.shields.io/badge/VERSION-DEBUG%20--%20demonstrable-yellow?style=flat-square)](https://github.com/averov90/Synesthesia-Vision/releases)
 ### :small_orange_diamond: [Русская версия](/README.md)
 
 ###### If you don't know what synesthesia is, follow the [link](https://en.wikipedia.org/wiki/Synesthesia#Chromesthesia).
